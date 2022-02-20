@@ -1,12 +1,7 @@
 defmodule BattleshipsEngine.Board do
-  alias BattleshipsEngine.{Coordinate, Guesses, Battleship}
+  alias BattleshipsEngine.{Coordinate, Battleship}
 
   def new(), do: %{}
-
-  def add(%Guesses{} = guesses, :hit, %Coordinate{} = coordinate), do:
-    update_in(guesses.hits, &MapSet.put(&1, coordinate))
-  def add(%Guesses{} = guesses, :miss, %Coordinate{} = coordinate), do:
-    update_in(guesses.misses, &MapSet.put(&1, coordinate))
 
   def position_ship(board, key, %Battleship{} = ship) do
     case overlaps_existing_battleships?(board, key, ship) do
