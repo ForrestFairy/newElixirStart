@@ -12,6 +12,7 @@ defmodule BattleshipsEngine.Application do
       BattleshipsEngine.GameSupervisor
     ]
 
+    :ets.new(:game_state, [:public, :named_table])
     opts = [strategy: :one_for_one, name: BattleshipsEngine.Supervisor]
     Supervisor.start_link(children, opts)
   end
