@@ -1,7 +1,9 @@
 defmodule BattleshipsEngine.Game do
   use GenServer
+  # , start: {__MODULE__, :start_link, [name]}, restart: :transient
   alias BattleshipsEngine.{Battleship, Board, Coordinate, Guesses, Rules}
 
+  @timeout 60 * 60 * 24 * 1000
   @players [:player1, :player2]
 
   def start_link(name) when is_binary(name), do:
@@ -10,7 +12,7 @@ defmodule BattleshipsEngine.Game do
   def init(name) do
     player1 = %{name: name, board: Board.new(), guesses: Guesses.new()}
     player2 = %{name: nil, board: Board.new(), guesses: Guesses.new()}
-    {:ok, %{player1: player1, player2: player2, rules: %Rules{}}}
+    {:ok, %{player1: player1, player2: player2, rules: %Rules{}}, @timeout}
   end
 
   def add_player(game, name) when is_binary(name), do:
@@ -93,7 +95,7 @@ defmodule BattleshipsEngine.Game do
 
   defp update_rules(state_data, rules), do: %{state_data | rules: rules}
 
-  defp reply_success(state_data, reply), do: {:reply, reply, state_data}
+  defp reply_success(state_data, reply), do: {:reply, reply, state_data, @timeout}
 
   def position_ship(game, player, key, row, col) when player in @players, do:
     GenServer.call(game, {:position_ship, player, key, row, col})
@@ -119,4 +121,8 @@ defmodule BattleshipsEngine.Game do
   end
 
   def via_tuple(name), do: {:via, Registry, {Registry.Game, name}}
+
+  def handle_info(:timeout, state_data) do
+    {:stop, {:shutdown, :timeout}, state_data}
+  end
 end

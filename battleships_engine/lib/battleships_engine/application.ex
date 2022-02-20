@@ -8,13 +8,10 @@ defmodule BattleshipsEngine.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: BattleshipsEngine.Worker.start_link(arg)
-      # {BattleshipsEngine.Worker, arg}
-      {Registry, keys: :unique, name: Registry.Game}
+      {Registry, keys: :unique, name: Registry.Game},
+      BattleshipsEngine.GameSupervisor
     ]
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
     opts = [strategy: :one_for_one, name: BattleshipsEngine.Supervisor]
     Supervisor.start_link(children, opts)
   end
