@@ -13,6 +13,7 @@ defmodule BattleshipsInterface.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: BattleshipsInterface.PubSub},
       # Start the Endpoint (http/https)
+      BattleshipsInterfaceWeb.Presence,
       BattleshipsInterfaceWeb.Endpoint
       # Start a worker by calling: BattleshipsInterface.Worker.start_link(arg)
       # {BattleshipsInterface.Worker, arg}
