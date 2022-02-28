@@ -1,7 +1,6 @@
 // We import the CSS which is extracted to its own file by esbuild.
 // Remove this line if you add a your own CSS build pipeline (e.g postcss).
 import "../css/app.css"
-
 // If you want to use Phoenix channels, run `mix help phx.gen.channel`
 // to get started and then uncomment the line below.
 // import "./user_socket.js"
@@ -25,6 +24,7 @@ import "phoenix_html"
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
+import socket from "./user_socket"
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}})
@@ -42,4 +42,81 @@ liveSocket.connect()
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
+// console.log(10);
+// let btn = document.createElement("button");
+// btn.innerHTML = "click me";
+// document.body.appendChild(btn);
+// var phoenix = require("phoenix");
+// var socket1 = new phoenix.Socket("/socket", {})
 
+function new_channel(player, screen_name) {
+    return socket.channel("game:" + player, {screen_name: screen_name});
+}
+
+function join(channel) {
+    channel.join()
+        .receive("ok", response => {
+            console.log("Joined successfully!", response)
+        })
+        .receive("error", response => {
+            console.log("Unable to join", response)
+        })
+}
+
+const btn = document.getElementById("myBtn");
+btn.addEventListener('click', create_game, false);
+
+function doClick() {
+    console.log("Halo");
+}
+
+function new_game(channel) {
+    channel.push("new_game")
+        .receive("ok", response => {
+            console.log("New Game!", response)
+        })
+        .receive("error", response => {
+            console.log("Unable to start a new game.", response)
+        })
+}
+
+function create_game() {
+    game_channel = new_channel("adam", "adam");
+    join(game_channel);
+    new_game(game_channel);
+}
+
+function add_player(channel, player) {
+    channel.push("add_player", player)
+        .receive("error", response => {
+            console.log("Unable to add new player: " + player, response)
+        })
+}
+
+function position_ships(channel, player, ship, row, col) {
+    var params = {"player": player, "ship": ship, "row": row, "col": col}
+    channel.push("position_ship", params)
+        .receive("ok", response => {
+            console.log("Ship positioned!", response);
+        })
+        .receive("error", response => {
+            console.log("Unable to position ship.", response);
+        })
+}
+
+function set_ships(channel, player) {
+    channel.push("set_ships", player)
+        .receive("ok", response => {
+            console.log("Here is the board:");
+            console.dir(response.board);
+        })
+        .receive(":error", response => {
+            console.log("Unable to set ships", response)
+        })
+}
+/* <section class="boards">
+  <script> */
+
+  
+//   </script>
+// </section>

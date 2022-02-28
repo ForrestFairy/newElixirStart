@@ -1,47 +1,49 @@
 <section class="phx-hero">
-  <h1><%= gettext "Welcome to %{name}!", name: "Phoenix" %></h1>
-  <p>Peace of mind from prototype to production</p>
+  <h1><%= gettext "Welcome to %{name}!", name: "Battleships" %></h1>
+  <h2> Create game </h2>
   <p>
     <%= form_tag("/test") do 
-      [tag(:input, type: "text", name: "name"),
+      [tag(:input, type: "text", name: "name", value: "Enter name"),
       tag(:input, type: "submit", value: "New Game")]
     end%>
   </p>
 </section>
 
-<section class="row">
-  <article class="column">
-    <h2>Resources</h2>
-    <ul>
-      <li>
-        <a href="https://hexdocs.pm/phoenix/overview.html">Guides &amp; Docs</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix">Source</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix/blob/v1.6/CHANGELOG.md">v1.6 Changelog</a>
-      </li>
-    </ul>
-  </article>
-  <article class="column">
-    <h2>Help</h2>
-    <ul>
-      <li>
-        <a href="https://elixirforum.com/c/phoenix-forum">Forum</a>
-      </li>
-      <li>
-        <a href="https://web.libera.chat/#elixir">#elixir on Libera Chat (IRC)</a>
-      </li>
-      <li>
-        <a href="https://twitter.com/elixirphoenix">Twitter @elixirphoenix</a>
-      </li>
-      <li>
-        <a href="https://elixir-slackin.herokuapp.com/">Elixir on Slack</a>
-      </li>
-      <li>
-        <a href="https://discord.gg/elixir">Elixir on Discord</a>
-      </li>
-    </ul>
-  </article>
-</section>
+<button id = "myBtn">Click here!</button>
+
+<script src="https://cdn.jsdelivr.net/processing.js/1.4.8/processing.min.js"></script> 
+<canvas id="ownMap">
+  <script>
+  var sketchProc = function(processingInstance) {
+    with (processingInstance) {
+      size(550, 550);
+      frameRate(30);
+
+      var Tile = function(x, y) {
+            this.x = x;
+            this.y = y;
+            this.width = 50;
+      }
+      Tile.prototype.draw = function () {
+        fill(211, 247, 202);
+        strokeWeight(2);
+        rect(this.x, this.y, this.width, this.width, 10);
+      }
+      var tiles = [];
+      for (var i = 0; i < 10; i++) {
+        for (var j = 0; j < 10; j++) {
+          var tileX = 54 * i + 5;
+          var tileY = 54 * j + 5;
+          tiles.push(new Tile(tileX, tileY));
+        }
+      }
+      for (var i = 0; i < tiles.length; i++) {
+        tiles[i].draw();
+      }
+
+    }};
+    var canvas = document.getElementById("ownMap"); 
+    // Pass the function sketchProc (defined in myCode.js) to Processing's constructor.
+    var processingInstance = new Processing(canvas, sketchProc); 
+  </script>
+</canvas>

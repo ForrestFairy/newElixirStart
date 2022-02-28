@@ -18,6 +18,7 @@ defmodule BattleshipsInterfaceWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    # get "/socket/websocket", PageController, :index
     post "/test", PageController, :test
   end
 
